@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hexen-Quest: Der Greene Wald</title>
+    <style>
+        /* Retro Pixel-Art Style */
+        :root {
+            --bg-color: #1a2416;
+            --box-bg: #4a3728;
+            --border-color: #2d1f15;
+            --accent-green: #5a7d36;
+            --text-yellow: #f5d34b;
+            --text-white: #e0e0e0;
+            --btn-hover: #7db146;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(#2d3a23 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: var(--text-white);
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: var(--text-yellow);
+            font-size: 2.5rem;
+            text-shadow: 3px 3px 0px #000;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #game-container {
+            background-color: var(--box-bg);
+            border: 6px solid var(--border-color);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 700px;
+            padding: 25px;
+            box-shadow: 0 10px 0 #1a140f;
+            position: relative;
+        }
+
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--text-yellow);
+        }
+
+        /* Fortschrittsbalken */
+        .progress-container {
+            width: 100%;
+            height: 15px;
+            background: #2d1f15;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            border: 2px solid #1a140f;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #5a7d36, #8dbd5a);
+            transition: width 0.4s ease;
+        }
+
+        .character-box {
+            background: #3d2b1f;
+            border: 3px inset #2d1f15;
+            padding: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .witch-icon {
+            font-size: 40px;
+            filter: drop-shadow(2px 2px 0px #000);
+        }
+
+        #question-text {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            line-height: 1.4;
+            min-height: 60px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        button {
+            background-color: var(--accent-green);
+            color: white;
+            border: none;
+            border-bottom: 4px solid #3a5223;
+            padding: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.1s;
+        }
+
+        button:hover {
+            background-color: var(--btn-hover);
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(2px);
+            border-bottom: 0;
+        }
+
+        button:disabled {
+            background-color: #666;
+            cursor: not-allowed;
+            border-bottom: 0;
+        }
+
+        .next-area {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        #next-btn {
+            background-color: var(--text-yellow);
+            color: #000;
+            font-weight: bold;
+            padding: 15px 40px;
+            border-bottom: 4px solid #b39a37;
+            display: none;
+        }
+
+        .result-screen {
+            display: none;
+            text-align: center;
+        }
+
+        @media (max-width: 500px) {
+            .options-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>HEXEN-QUEST: DER GREENE WALD</h1>
+
+    <div id="game-container">
+        <div id="quiz-box">
+            <div class="status-header">
+                <span id="stage-count">STAGE: 1/15</span>
+                <span id="score-count">SCORE: 0</span>
+            </div>
+
+            <div class="progress-container">
+                <div id="progress-bar"></div>
+            </div>
+
+            <div class="character-box">
+                <span class="witch-icon">🧙</span>
+                <div style="font-size: 0.9rem; color: #aaa;">Der Wald wird dich prüfen...</div>
+            </div>
+
+            <div id="question-text">Lade Frage...</div>
+
+            <div class="options-grid" id="options-container">
+                </div>
+
+            <div class="next-area">
+                <button id="next-btn" onclick="nextQuestion()">WEITERFLIEGEN →</button>
+            </div>
+        </div>
+
+        <div id="result-screen" class="result-screen">
+            <h2 style="color: var(--text-yellow);">QUEST ENDE</h2>
+            <p id="final-score" style="font-size: 1.5rem;"></p>
+            <p id="rank-text"></p>
+            <button onclick="location.reload()" style="margin-top: 20px;">NOCHMAL SPIELEN</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            { q: "In welcher Epoche fanden die meisten Hexenprozesse statt?", a: ["Mittelalter", "Frühe Neuzeit", "Antike", "Aufklärung"], correct: 1 },
+            { q: "Wie hieß das berüchtigte Buch von Heinrich Kramer (1486)?", a: ["Hexenhammer", "Bibel der Magie", "Codex Diaboli", "Schattenbuch"], correct: 0 },
+            { q: "Welches US-Dorf wurde 1692 durch Hexenprozesse berühmt?", a: ["Boston", "Las Vegas", "Salem", "New York"], correct: 2 },
+            { q: "Welcher Anteil der hingerichteten 'Hexen' waren Frauen?", a: ["ca. 20%", "ca. 50%", "ca. 80%", "100%"], correct: 2 },
+            { q: "Was war eine 'Wasserprobe'?", a: ["Ein Bad zur Heilung", "Ein Gottesurteil", "Ein Trinkwettbewerb", "Ein Beweis für Reinheit"], correct: 1 },
+            { q: "Welches Land war ein Zentrum der Verfolgungen?", a: ["Heiliges Römisches Reich", "Ägypten", "China", "Brasilien"], correct: 0 },
+            { q: "Was glaubte man, beim Sabbat zu tun?", mit: ["Beten", "Den Teufel verehren", "Handel treiben", "Steuern zahlen"], a: ["Beten", "Den Teufel verehren", "Handel treiben", "Steuern zahlen"], correct: 1 },
+            { q: "Wer beendete als einer der ersten die Prozesse in Preußen?", a: ["Friedrich der Große", "Kaiser Karl V.", "Martin Luther", "Papst Innozenz"], correct: 0 },
+            { q: "Wie nennt man die falsche Vorstellung, Hexen seien im Mittelalter verbrannt worden?", a: ["Mittelalter-Mythos", "Hexen-Lüge", "Zeit-Paradoxon", "Retro-Fehler"], correct: 0 },
+            { q: "Was war das Hauptmotiv für viele Denunziationen?", a: ["Nächstenliebe", "Neid & Nachbarschaftsstreit", "Wissenschaft", "Langeweile"], correct: 1 },
+            { q: "Wie viele Menschen wurden in Europa schätzungsweise hingerichtet?", a: ["1 Million", "ca. 40.000 - 60.000", "Genau 1.000", "Über 5 Millionen"], correct: 1 },
+            { q: "Warum gestanden viele unschuldige Menschen?", a: ["Freiwillig", "Wegen Folter", "Aus Stolz", "Wegen Geld"], correct: 1 },
+            { q: "Welcher Beruf war oft unter den Opfern (Hebammen-Mythos)?", a: ["Schmiede", "Hebammen", "Ritter", "Könige"], correct: 1 },
+            { q: "Welcher Jesuitenpater schrieb gegen die Hexenprozesse?", a: ["Friedrich Spee", "Ignatius von Loyola", "Petrus Canisius", "Franz Xaver"], correct: 0 },
+            { q: "Wann fand die letzte offizielle Hinrichtung in Europa statt?", a: ["1550", "1620", "1782 (Schweiz)", "1910"], correct: 2 }
+        ];
+
+        let currentIdx = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            const q = quizData[currentIdx];
+            document.getElementById("stage-count").innerText = `STAGE: ${currentIdx + 1}/15`;
+            document.getElementById("question-text").innerText = q.q;
+            document.getElementById("progress-bar").style.width = `${(currentIdx / 15) * 100}%`;
+            
+            const container = document.getElementById("options-container");
+            container.innerHTML = "";
+            
+            q.a.forEach((ans, i) => {
+                const btn = document.createElement("button");
+                btn.innerText = ans;
+                btn.onclick = () => checkAnswer(i, btn);
+                container.appendChild(btn);
+            });
+            document.getElementById("next-btn").style.display = "none";
+        }
+
+        function checkAnswer(choice, btn) {
+            const correct = quizData[currentIdx].correct;
+            const allBtns = document.querySelectorAll(".options-grid button");
+            
+            allBtns.forEach(b => b.disabled = true);
+            
+            if (choice === correct) {
+                btn.style.backgroundColor = "#2ecc71";
+                score++;
+                document.getElementById("score-count").innerText = `SCORE: ${score}`;
+            } else {
+                btn.style.backgroundColor = "#e74c3c";
+                allBtns[correct].style.backgroundColor = "#2ecc71";
+            }
+            
+            document.getElementById("next-btn").style.display = "inline-block";
+        }
+
+        function nextQuestion() {
+            currentIdx++;
+            if (currentIdx < quizData.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById("quiz-box").style.display = "none";
+            const resultScreen = document.getElementById("result-screen");
+            resultScreen.style.display = "block";
+            document.getElementById("final-score").innerText = `Rein: ${score} / 15 Punkten`;
+            
+            let rank = "";
+            if(score === 15) rank = "Großmeister der Geschichte";
+            else if(score > 10) rank = "Gelehrter des Waldes";
+            else if(score > 5) rank = "Dorfbewohner";
+            else rank = "Verirrter Wanderer";
+            
+            document.getElementById("rank-text").innerText = `Dein Rang: ${rank}`;
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
