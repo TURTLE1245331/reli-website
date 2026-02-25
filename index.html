@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hexen-Quest: Der Greene Wald</title>
+    <title>Hexen-Quiz: Der Gruene Wald</title>
     <style>
         /* Retro Pixel-Art Style */
         :root {
@@ -58,7 +59,6 @@
             color: var(--text-yellow);
         }
 
-        /* Fortschrittsbalken */
         .progress-container {
             width: 100%;
             height: 15px;
@@ -108,7 +108,7 @@
             background-color: var(--accent-green);
             color: white;
             border: none;
-            border-bottom: 4px solid #3a5223;
+            Überlege gut border-bottom: 4px solid #3a5223;
             padding: 12px;
             font-family: inherit;
             font-size: 1rem;
@@ -153,13 +153,16 @@
         }
 
         @media (max-width: 500px) {
-            .options-grid { grid-template-columns: 1fr; }
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
+
 <body>
 
-    <h1>HEXEN-QUEST: DER GREENE WALD</h1>
+    <h1>HEXEN-QUIZ: Bist Unschuldig oder Schuldig?</h1>
 
     <div id="game-container">
         <div id="quiz-box">
@@ -174,13 +177,13 @@
 
             <div class="character-box">
                 <span class="witch-icon">🧙</span>
-                <div style="font-size: 0.9rem; color: #aaa;">Der Wald wird dich prüfen...</div>
+                <div id="witch-bubble" style="font-size: 0.9rem; color: #aaa;">Der Wald wird dich prüfen...</div>
             </div>
 
             <div id="question-text">Lade Frage...</div>
 
             <div class="options-grid" id="options-container">
-                </div>
+            </div>
 
             <div class="next-area">
                 <button id="next-btn" onclick="nextQuestion()">WEITERFLIEGEN →</button>
@@ -197,21 +200,21 @@
 
     <script>
         const quizData = [
-            { q: "In welcher Epoche fanden die meisten Hexenprozesse statt?", a: ["Mittelalter", "Frühe Neuzeit", "Antike", "Aufklärung"], correct: 1 },
-            { q: "Wie hieß das berüchtigte Buch von Heinrich Kramer (1486)?", a: ["Hexenhammer", "Bibel der Magie", "Codex Diaboli", "Schattenbuch"], correct: 0 },
-            { q: "Welches US-Dorf wurde 1692 durch Hexenprozesse berühmt?", a: ["Boston", "Las Vegas", "Salem", "New York"], correct: 2 },
-            { q: "Welcher Anteil der hingerichteten 'Hexen' waren Frauen?", a: ["ca. 20%", "ca. 50%", "ca. 80%", "100%"], correct: 2 },
-            { q: "Was war eine 'Wasserprobe'?", a: ["Ein Bad zur Heilung", "Ein Gottesurteil", "Ein Trinkwettbewerb", "Ein Beweis für Reinheit"], correct: 1 },
-            { q: "Welches Land war ein Zentrum der Verfolgungen?", a: ["Heiliges Römisches Reich", "Ägypten", "China", "Brasilien"], correct: 0 },
-            { q: "Was glaubte man, beim Sabbat zu tun?", mit: ["Beten", "Den Teufel verehren", "Handel treiben", "Steuern zahlen"], a: ["Beten", "Den Teufel verehren", "Handel treiben", "Steuern zahlen"], correct: 1 },
-            { q: "Wer beendete als einer der ersten die Prozesse in Preußen?", a: ["Friedrich der Große", "Kaiser Karl V.", "Martin Luther", "Papst Innozenz"], correct: 0 },
-            { q: "Wie nennt man die falsche Vorstellung, Hexen seien im Mittelalter verbrannt worden?", a: ["Mittelalter-Mythos", "Hexen-Lüge", "Zeit-Paradoxon", "Retro-Fehler"], correct: 0 },
-            { q: "Was war das Hauptmotiv für viele Denunziationen?", a: ["Nächstenliebe", "Neid & Nachbarschaftsstreit", "Wissenschaft", "Langeweile"], correct: 1 },
-            { q: "Wie viele Menschen wurden in Europa schätzungsweise hingerichtet?", a: ["1 Million", "ca. 40.000 - 60.000", "Genau 1.000", "Über 5 Millionen"], correct: 1 },
-            { q: "Warum gestanden viele unschuldige Menschen?", a: ["Freiwillig", "Wegen Folter", "Aus Stolz", "Wegen Geld"], correct: 1 },
-            { q: "Welcher Beruf war oft unter den Opfern (Hebammen-Mythos)?", a: ["Schmiede", "Hebammen", "Ritter", "Könige"], correct: 1 },
-            { q: "Welcher Jesuitenpater schrieb gegen die Hexenprozesse?", a: ["Friedrich Spee", "Ignatius von Loyola", "Petrus Canisius", "Franz Xaver"], correct: 0 },
-            { q: "Wann fand die letzte offizielle Hinrichtung in Europa statt?", a: ["1550", "1620", "1782 (Schweiz)", "1910"], correct: 2 }
+            { q: "Was war der Hauptgrund für Hexenbeschuldigungen?", a: ["Streit unter Nachbarn", "Wissenschaft", "Sport", "Mode"], correct: 0 },
+            { q: "Welche 'Prüfung' wurde oft angewandt?", a: ["Wasserprobe", "Wettrennen", "Singen", "Karten spielen"], correct: 0 },
+            { q: "Welches Tier gilt oft als Begleiter einer Hexe?", a: ["Schwarze Katze", "Goldfisch", "Elefant", "Hase"], correct: 0 },
+            { q: "Worauf fliegen Hexen laut alten Sagen?", a: ["Besen", "Staubsauger", "Teppich", "Drachen"], correct: 0 },
+            { q: "Wer leitete meistens die Prozesse?", a: ["Richter", "Kinder", "Bäcker", "Matrosen"], correct: 0 },
+            { q: "In welchem Gefäß brauen Hexen ihre Tränke?", a: ["Kessel", "Teetasse", "Badewanne", "Eimer"], correct: 0 },
+            { q: "Warum gestanden viele Menschen falsche Dinge?", a: ["Wegen Folter", "Aus Spaß", "Wegen Hunger", "Aus Versehen"], correct: 0 },
+            { q: "Wie viele Hexen wurden in Europa ungefähr verbrannt?", a: ["40000 - 60000", "", "100000 - 120000", "67Mio - 68Mio"], correct: 0 },
+            { q: "In welcher Zeit fanden die meisten Prozesse statt?", a: ["Frühe Neuzeit", "Steinzeit", "Zukunft", "Antike"], correct: 0 },
+            { q: "Wann endeten die Hexenprozesse in Europa?", a: ["18. Jahrhundert", "Letztes Jahr", "12. Jahrhundert", "Gestern"], correct: 0 },
+            { q: "Was glaubten die Leute, was Hexen beeinflussen?", a: ["Das Wetter", "Das Internet", "Die Uhrzeit", "Die Sterne"], correct: 0 },
+            { q: "In welchem heutigen Land gab es die meisten Hexenprozesse?", a: ["Deutschland", "Italien", "England", "Spanien"], correct: 0 },
+            { q: "Was trugen Hexen in Märchen oft auf dem Kopf?", a: ["Spitzer Hut", "Helm", "Krone", "Baseballcap"], correct: 0 },
+            { q: "Welche Nacht wird am 30. April gefeiert?", a: ["Walpurgisnacht", "Weihnachten", "Ostern", "Silvester"], correct: 0 },
+            { q: "Gibt es heute noch Menschen, die sich als Hexen bezeichnen?", a: ["Ja, als Religion/Hobby", "Nein, niemals", "Nur im Weltraum", "Nur unter Wasser"], correct: 0 }
         ];
 
         let currentIdx = 0;
@@ -221,11 +224,12 @@
             const q = quizData[currentIdx];
             document.getElementById("stage-count").innerText = `STAGE: ${currentIdx + 1}/15`;
             document.getElementById("question-text").innerText = q.q;
-            document.getElementById("progress-bar").style.width = `${(currentIdx / 15) * 100}%`;
-            
+            document.getElementById("progress-bar").style.width = `${((currentIdx + 1) / 15) * 100}%`;
+            document.getElementById("witch-bubble").innerText = "Überlege gut...";
+
             const container = document.getElementById("options-container");
             container.innerHTML = "";
-            
+
             q.a.forEach((ans, i) => {
                 const btn = document.createElement("button");
                 btn.innerText = ans;
@@ -238,18 +242,20 @@
         function checkAnswer(choice, btn) {
             const correct = quizData[currentIdx].correct;
             const allBtns = document.querySelectorAll(".options-grid button");
-            
+
             allBtns.forEach(b => b.disabled = true);
-            
+
             if (choice === correct) {
                 btn.style.backgroundColor = "#2ecc71";
                 score++;
                 document.getElementById("score-count").innerText = `SCORE: ${score}`;
+                document.getElementById("witch-bubble").innerText = "Richtig! Flieg weiter!";
             } else {
                 btn.style.backgroundColor = "#e74c3c";
                 allBtns[correct].style.backgroundColor = "#2ecc71";
+                document.getElementById("witch-bubble").innerText = "Oh weh... das war falsch.";
             }
-            
+
             document.getElementById("next-btn").style.display = "inline-block";
         }
 
@@ -266,18 +272,19 @@
             document.getElementById("quiz-box").style.display = "none";
             const resultScreen = document.getElementById("result-screen");
             resultScreen.style.display = "block";
-            document.getElementById("final-score").innerText = `Rein: ${score} / 15 Punkten`;
-            
+            document.getElementById("final-score").innerText = `Ergebnis: ${score} / 15 Punkten`;
+
             let rank = "";
-            if(score === 15) rank = "Großmeister der Geschichte";
-            else if(score > 10) rank = "Gelehrter des Waldes";
-            else if(score > 5) rank = "Dorfbewohner";
-            else rank = "Verirrter Wanderer";
-            
+            if (score === 15) rank = "Oberhexe / Obermeister";
+            else if (score > 10) rank = "Richter";
+            else if (score > 5) rank = "Dorfbewohner";
+            else rank = "Hexe";
+
             document.getElementById("rank-text").innerText = `Dein Rang: ${rank}`;
         }
 
         loadQuestion();
     </script>
 </body>
+
 </html>
