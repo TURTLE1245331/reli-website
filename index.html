@@ -6,10 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hexen-Quiz: Der Gruene Wald</title>
     <style>
-        /* Retro Pixel-Art Style */
         :root {
-            --bg-color: #1a2416;
-            --box-bg: #4a3728;
+            --bg-color: #0d1a0a;
+            --box-bg: rgba(74, 55, 40, 0.95);
             --border-color: #2d1f15;
             --accent-green: #5a7d36;
             --text-yellow: #f5d34b;
@@ -19,132 +18,158 @@
 
         body {
             background-color: var(--bg-color);
-            background-image: radial-gradient(#2d3a23 1px, transparent 1px);
-            background-size: 20px 20px;
+            background-image: url("background.png"),
+                linear-gradient(to bottom, rgba(26, 36, 22, 0.8), rgba(13, 26, 10, 0.9)),
+                radial-gradient(circle at 20% 30%, #2d3a23 2px, transparent 2px);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             color: var(--text-white);
             font-family: 'Courier New', Courier, monospace;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .fog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(90, 125, 54, 0.1), transparent);
+            z-index: -2;
+            animation: drift 40s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes drift {
+            from {
+                transform: translateX(-50%);
+            }
+
+            to {
+                transform: translateX(0%);
+            }
+        }
+
+        #music-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--box-bg);
+            border: 3px solid var(--border-color);
+            padding: 10px;
+            cursor: pointer;
+            z-index: 100;
+            border-radius: 8px;
         }
 
         h1 {
             color: var(--text-yellow);
-            font-size: 2.5rem;
-            text-shadow: 3px 3px 0px #000;
-            margin-bottom: 20px;
+            text-shadow: 4px 4px 0px #000;
+            margin: 40px 0;
             text-align: center;
         }
 
-        #game-container {
+        #game-container,
+        .info-section {
             background-color: var(--box-bg);
             border: 6px solid var(--border-color);
             border-radius: 12px;
-            width: 100%;
-            max-width: 700px;
+            width: 90%;
+            max-width: 650px;
             padding: 25px;
-            box-shadow: 0 10px 0 #1a140f;
-            position: relative;
+            box-shadow: 0 12px 0 #1a140f;
+            margin-bottom: 40px;
+        }
+
+        #game-container {
+            display: none;
+        }
+
+        .info-section h2 {
+            color: var(--text-yellow);
+            border-bottom: 2px dashed var(--text-yellow);
+            padding-bottom: 10px;
         }
 
         .status-header {
             display: flex;
             justify-content: space-between;
-            font-weight: bold;
-            margin-bottom: 10px;
             color: var(--text-yellow);
+            margin-bottom: 15px;
         }
 
         .progress-container {
             width: 100%;
-            height: 15px;
+            height: 12px;
             background: #2d1f15;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            overflow: hidden;
+            margin-bottom: 25px;
             border: 2px solid #1a140f;
         }
 
         #progress-bar {
             width: 0%;
             height: 100%;
-            background: linear-gradient(90deg, #5a7d36, #8dbd5a);
-            transition: width 0.4s ease;
-        }
-
-        .character-box {
-            background: #3d2b1f;
-            border: 3px inset #2d1f15;
-            padding: 10px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .witch-icon {
-            font-size: 40px;
-            filter: drop-shadow(2px 2px 0px #000);
-        }
-
-        #question-text {
-            font-size: 1.2rem;
-            margin-bottom: 25px;
-            line-height: 1.4;
-            min-height: 60px;
+            background: #5a7d36;
+            transition: width 0.5s;
         }
 
         .options-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 12px;
         }
 
         button {
             background-color: var(--accent-green);
             color: white;
             border: none;
-            Überlege gut border-bottom: 4px solid #3a5223;
-            padding: 12px;
+            border-bottom: 4px solid #3a5223;
+            padding: 15px;
             font-family: inherit;
-            font-size: 1rem;
             cursor: pointer;
-            border-radius: 4px;
-            transition: all 0.1s;
+            text-transform: uppercase;
+            font-weight: bold;
         }
 
         button:hover {
             background-color: var(--btn-hover);
-            transform: translateY(-2px);
         }
 
-        button:active {
-            transform: translateY(2px);
-            border-bottom: 0;
-        }
-
-        button:disabled {
-            background-color: #666;
-            cursor: not-allowed;
-            border-bottom: 0;
-        }
-
-        .next-area {
-            margin-top: 30px;
-            text-align: center;
+        #start-quiz-btn {
+            background-color: var(--text-yellow);
+            color: #000;
+            width: 100%;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            border-bottom-color: #b39a37;
         }
 
         #next-btn {
             background-color: var(--text-yellow);
             color: #000;
-            font-weight: bold;
-            padding: 15px 40px;
-            border-bottom: 4px solid #b39a37;
             display: none;
+            margin: 20px auto 0 auto;
+            padding: 15px 40px;
+        }
+
+        footer {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        footer a {
+            color: var(--text-yellow);
+            text-decoration: none;
         }
 
         .result-screen {
@@ -162,7 +187,24 @@
 
 <body>
 
-    <h1>HEXEN-QUIZ: Bist Unschuldig oder Schuldig?</h1>
+    <audio id="bg-music" loop>
+        <source src="ambient.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="music-toggle" onclick="toggleMusic()">🔇</div>
+    <div class="fog"></div>
+
+    <h1>HEXEN-QUIZ</h1>
+
+    <div id="intro-section" class="info-section">
+        <h2>📜 Hinter den Kulissen des Wahns</h2>
+        <p>Die Hexenverfolgungen waren eines der dunkelsten Kapitel der Geschichte. Die meisten Prozesse fanden in der
+            <strong>Fernen Vergangenheit</strong> statt.
+        </p>
+        <p>Oft reichten bloße Nachbarschaftsstreitigkeiten aus, um jemanden der Magie zu unterstellen.</p>
+        <p>Bist du bereit, dein Wissen zu testen und den Wald zu betreten?</p>
+        <button id="start-quiz-btn" onclick="startGame()">QUIZ STARTEN</button>
+    </div>
 
     <div id="game-container">
         <div id="quiz-box">
@@ -170,35 +212,46 @@
                 <span id="stage-count">STAGE: 1/15</span>
                 <span id="score-count">SCORE: 0</span>
             </div>
-
             <div class="progress-container">
                 <div id="progress-bar"></div>
             </div>
-
-            <div class="character-box">
-                <span class="witch-icon">🧙</span>
-                <div id="witch-bubble" style="font-size: 0.9rem; color: #aaa;">Der Wald wird dich prüfen...</div>
-            </div>
-
-            <div id="question-text">Lade Frage...</div>
-
-            <div class="options-grid" id="options-container">
-            </div>
-
-            <div class="next-area">
-                <button id="next-btn" onclick="nextQuestion()">WEITERFLIEGEN →</button>
-            </div>
+            <div id="question-text" style="margin-bottom: 30px; min-height: 60px; font-weight: bold;">Lade...</div>
+            <div class="options-grid" id="options-container"></div>
+            <button id="next-btn" onclick="nextQuestion()">WEITER →</button>
         </div>
 
         <div id="result-screen" class="result-screen">
             <h2 style="color: var(--text-yellow);">QUEST ENDE</h2>
             <p id="final-score" style="font-size: 1.5rem;"></p>
-            <p id="rank-text"></p>
-            <button onclick="location.reload()" style="margin-top: 20px;">NOCHMAL SPIELEN</button>
+            <p id="rank-text" style="color: var(--text-yellow);"></p>
+            <button onclick="location.reload()" style="background: #eee; color: #000;">NOCHMAL</button>
         </div>
     </div>
 
+    <footer>
+        <a href="quellen.html">Quellen & Impressum</a>
+        <p>Made with Love by Tim</p>
+    </footer>
+
     <script>
+        const music = document.getElementById('bg-music');
+        const musicBtn = document.getElementById('music-toggle');
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) { music.pause(); musicBtn.innerText = "🔇"; }
+            else { music.play(); musicBtn.innerText = "🔊"; }
+            isPlaying = !isPlaying;
+        }
+
+        function startGame() {
+            document.getElementById('intro-section').style.display = 'none';
+            document.getElementById('game-container').style.display = 'block';
+            // Musik optional beim Starten direkt mit anmachen:
+            // if(!isPlaying) toggleMusic(); 
+            loadQuestion();
+        }
+
         const quizData = [
             { q: "Was war der Hauptgrund für Hexenbeschuldigungen?", a: ["Streit unter Nachbarn", "Wissenschaft", "Sport", "Mode"], correct: 0 },
             { q: "Welche 'Prüfung' wurde oft angewandt?", a: ["Wasserprobe", "Wettrennen", "Singen", "Karten spielen"], correct: 0 },
@@ -207,7 +260,7 @@
             { q: "Wer leitete meistens die Prozesse?", a: ["Richter", "Kinder", "Bäcker", "Matrosen"], correct: 0 },
             { q: "In welchem Gefäß brauen Hexen ihre Tränke?", a: ["Kessel", "Teetasse", "Badewanne", "Eimer"], correct: 0 },
             { q: "Warum gestanden viele Menschen falsche Dinge?", a: ["Wegen Folter", "Aus Spaß", "Wegen Hunger", "Aus Versehen"], correct: 0 },
-            { q: "Wie viele Hexen wurden in Europa ungefähr verbrannt?", a: ["40000 - 60000", "", "100000 - 120000", "67Mio - 68Mio"], correct: 0 },
+            { q: "Wie viele Hexen wurden in Europa ungefähr verbrannt?", a: ["40.000 - 60.000", "100 - 2.000", "100.000 - 120.000", "67 Mio - 68 Mio"], correct: 0 },
             { q: "In welcher Zeit fanden die meisten Prozesse statt?", a: ["Frühe Neuzeit", "Steinzeit", "Zukunft", "Antike"], correct: 0 },
             { q: "Wann endeten die Hexenprozesse in Europa?", a: ["18. Jahrhundert", "Letztes Jahr", "12. Jahrhundert", "Gestern"], correct: 0 },
             { q: "Was glaubten die Leute, was Hexen beeinflussen?", a: ["Das Wetter", "Das Internet", "Die Uhrzeit", "Die Sterne"], correct: 0 },
@@ -217,19 +270,15 @@
             { q: "Gibt es heute noch Menschen, die sich als Hexen bezeichnen?", a: ["Ja, als Religion/Hobby", "Nein, niemals", "Nur im Weltraum", "Nur unter Wasser"], correct: 0 }
         ];
 
-        let currentIdx = 0;
-        let score = 0;
+        let currentIdx = 0, score = 0;
 
         function loadQuestion() {
             const q = quizData[currentIdx];
             document.getElementById("stage-count").innerText = `STAGE: ${currentIdx + 1}/15`;
             document.getElementById("question-text").innerText = q.q;
             document.getElementById("progress-bar").style.width = `${((currentIdx + 1) / 15) * 100}%`;
-            document.getElementById("witch-bubble").innerText = "Überlege gut...";
-
             const container = document.getElementById("options-container");
             container.innerHTML = "";
-
             q.a.forEach((ans, i) => {
                 const btn = document.createElement("button");
                 btn.innerText = ans;
@@ -242,48 +291,31 @@
         function checkAnswer(choice, btn) {
             const correct = quizData[currentIdx].correct;
             const allBtns = document.querySelectorAll(".options-grid button");
-
             allBtns.forEach(b => b.disabled = true);
-
             if (choice === correct) {
                 btn.style.backgroundColor = "#2ecc71";
                 score++;
                 document.getElementById("score-count").innerText = `SCORE: ${score}`;
-                document.getElementById("witch-bubble").innerText = "Richtig! Flieg weiter!";
             } else {
                 btn.style.backgroundColor = "#e74c3c";
                 allBtns[correct].style.backgroundColor = "#2ecc71";
-                document.getElementById("witch-bubble").innerText = "Oh weh... das war falsch.";
             }
-
-            document.getElementById("next-btn").style.display = "inline-block";
+            document.getElementById("next-btn").style.display = "block";
         }
 
         function nextQuestion() {
             currentIdx++;
-            if (currentIdx < quizData.length) {
-                loadQuestion();
-            } else {
-                showResult();
-            }
+            if (currentIdx < quizData.length) { loadQuestion(); }
+            else { showResult(); }
         }
 
         function showResult() {
             document.getElementById("quiz-box").style.display = "none";
-            const resultScreen = document.getElementById("result-screen");
-            resultScreen.style.display = "block";
-            document.getElementById("final-score").innerText = `Ergebnis: ${score} / 15 Punkten`;
-
-            let rank = "";
-            if (score == 15) rank = "Obermeister";
-            else if (score > 10) rank = "Richter";
-            else if (score > 5) rank = "Dorfbewohner";
-            else rank = "Hexe";
-
-            document.getElementById("rank-text").innerText = `Dein Rang: ${rank}`;
+            document.getElementById("result-screen").style.display = "block";
+            document.getElementById("final-score").innerText = `Ergebnis: ${score} / 15`;
+            let rank = score === 15 ? "🥇 Obermeister" : score > 10 ? "⚖️ Richter" : "🏘️ Dorfbewohner";
+            document.getElementById("rank-text").innerText = `Rang: ${rank}`;
         }
-
-        loadQuestion();
     </script>
 </body>
 
